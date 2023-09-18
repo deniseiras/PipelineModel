@@ -1,0 +1,5 @@
+.vscode
+.env
+*.zip
+_local_test*
+ML_test
