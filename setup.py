@@ -1,11 +1,10 @@
 from setuptools import setup, find_packages
 
-prj_name='ML_test'
+prj_name='PipelineModel'
 setup(
     name=prj_name,
-    version='0.1.0',
-    description='Description of your project',
-    long_description='Detailed project description',
+    version='1.0',
+    description='Pipeline preprocessing and model prediction',
     author='Denis Eiras',
     author_email='denis.eiras@gmail.com',
     url=f'https://github.com/deniseiras/{prj_name}',
@@ -16,7 +15,7 @@ setup(
         'pandas',
         'datetime',
         'numpy',
+        'dask-ml',
         'pyarrow'
-        'dask-ml'
     ],
 )

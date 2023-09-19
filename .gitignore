@@ -2,4 +2,7 @@
 .env
 *.zip
 _local_test*
-ML_test
+PipelineModel_env
+PipelineModel.egg-info
+dist
+_env
