@@ -1,5 +1,5 @@
-import PipelineModel
-from ErrorLogger import log_failure
+from src.PipelineModel import PipelineModel
+from src.ErrorLogger import log_failure
 
 from dask_ml.preprocessing import PolynomialFeatures, QuantileTransformer, StandardScaler
 from dask import dataframe as dask_df
@@ -22,23 +22,17 @@ class PipelineModelDask(PipelineModel):
             super().__init__(pipeline_file_path)
             self.transformers = []
 
-        def fit_transform(self, pandas_df) -> bool:
-            ret = True
-            try:
-                ddf = dask_df(pandas_df)
-                # Apply each step in the pipeline configuration
-                for step_name, step_params in self.pipeline.pipeline_config[
-                    "steps"
-                ].items():
-                    transformer_class = self.pipeline.transformer_mapping.get(step_name)
-                    if transformer_class:
-                        transformer = transformer_class(**step_params)
-                        ddf = transformer.fit_transform(ddf)
-                        self.pipeline.transformers.append((step_name, transformer))
-            except Exception as e:
-                ret = False
-                log_failure(e)
-            return ret
+        def fit_transform(self, pandas_df) -> dask_df:
+            ddf = dask_df(pandas_df)
+            # Apply each step in the pipeline configuration
+            for step_name, step_params in self.pipeline.pipeline_config[
+                "steps"
+            ].items():
+                transformer_class = self.pipeline.transformer_mapping.get(step_name)
+                if transformer_class:
+                    transformer = transformer_class(**step_params)
+                    ddf = transformer.fit_transform(ddf)
+                    self.pipeline.transformers.append((step_name, transformer))
 
     def __init__(self, pipeline_file_path) -> None:
         super().__init__(pipeline_file_path)

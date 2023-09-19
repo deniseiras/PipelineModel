@@ -17,10 +17,6 @@ class PipelineModel(ABC):
             self.pipeline_file_path = pipeline_file_path
             self.pipeline_config = None
 
-        @abstractmethod
-        def fit_transform(self, df) -> bool:
-            pass
-
         def load_pipeline(self):
             with open(self.pipeline_file_path, "r") as f:
                 str_json = "\n".join(f.readlines()[3:])

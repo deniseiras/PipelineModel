@@ -1,5 +1,6 @@
-from PipelineModel import PipelineModel
-from ErrorLogger import log_failure
+from src.PipelineModel import PipelineModel
+from src.ErrorLogger import log_failure
+
 from datetime import datetime
  
     
@@ -32,7 +33,7 @@ class PipelineModelInvoker():
             if not len(data_transfmd):
                 raise RuntimeError("No data to score")
             if not hasattr(trained_model, "predict"):
-                raise RuntimeError("Model does not have a score function")]
+                raise RuntimeError("Model does not have a score function")
 
             predicted_value = trained_model.predict(data_transfmd)
             time_end = datetime.now()

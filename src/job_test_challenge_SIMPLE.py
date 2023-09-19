@@ -17,14 +17,14 @@ def load(type, **kwargs):
         df = pd.read_parquet("./data/dataset.parquet")
         return df
     if type == "model":
-        with open("artifacts/pipeline.jsonc", "r") as f:
+        with open("./artifacts/pipeline.jsonc", "r") as f:
             str_json = "\n".join(f.readlines()[3:])
         import json
 
         with open(json.loads(str_json)["steps"]["model"], "rb") as f:
             return pickle.load(f)
     if type == "pipeline":
-        return load_pipeline("artifacts/pipeline.jsonc")
+        return load_pipeline("./artifacts/pipeline.jsonc")
 
     else:
         return None
@@ -88,6 +88,9 @@ def score():
 
         predicted_value = m.predict(tr_data)
         time_end = datetime.now()
+        print(" The predicted values below are saved in th true_values.json, used as true value in tests")
+        np.save('test/true_data/true_values.npy', predicted_value)
+            
         print(f'Execution time: {time_end-time_init}')
         return predicted_value
         
