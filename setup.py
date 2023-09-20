@@ -15,6 +15,7 @@ setup(
         'pandas',
         'datetime',
         'numpy',
+        'dask',
         'dask-ml',
         'pyarrow'
     ],

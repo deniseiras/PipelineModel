@@ -1,39 +1,41 @@
-from src.PipelineModel import PipelineModel
-from src.ErrorLogger import log_failure
-
+from src.PipelineModel import Pipeline, PipelineModel
 from pandas import DataFrame, read_parquet
 from sklearn.preprocessing import PolynomialFeatures, QuantileTransformer, StandardScaler
-from sklearn.pipeline import Pipeline as scikit_pipe
+from sklearn.pipeline import Pipeline as ScikitPipeline
+
+
+class PipelineScikitLearn(Pipeline):
+    """_summary_
+    This class is a implementation of a Pipeline using scikit-learn
+    Should be used in small data file scenarios
+
+    Args:
+        pandas_df (pandas.DataFrame) : a pandas dataframe input file
+    """
+    def fit_transform(self, pandas_df: DataFrame) -> DataFrame:
+        for step_name, step_params in self.pipeline_config["steps"].items():
+            if step_name == 'model':
+                continue
+            transformer_class_name, steps = step_params.popitem()
+            # TODO will raise exception if class not found or continue without exception?
+            transformer_class = globals()[transformer_class_name]
+            transformer = transformer_class(**steps)
+            self.transformers.append((step_name, transformer))
+
+        pipe = ScikitPipeline(self.transformers)
+        pandas_transfmd_df = pipe.fit_transform(pandas_df)
+        return pandas_transfmd_df
+
 
 class PipelineModelScikitLearn(PipelineModel):
-    class PipelineScikitLearn(PipelineModel.Pipeline):
-        # implement the scikit learn preprocessing as needed
-        transformer_mapping = {
-            "reduce_dim": PolynomialFeatures,
-            "qtransf": QuantileTransformer,
-            "poly_feature": PolynomialFeatures,
-            "stdscaler": StandardScaler,
-        }
+    """_summary_
+    This class is a implementation of a PipelineModel ScikitLearn.
+    Should be used in small data file scenarios
+    Loads datas using pandas
 
-        def __init__(self, pipeline_file_path) -> None:
-            super().__init__(pipeline_file_path)
-            self.transformers = []
-
-        def fit_transform(self, pandas_df) -> DataFrame:
-            for step_name, step_params in self.pipeline.pipeline_config["steps"].items():
-                transformer_class = self.pipeline.transformer_mapping.get(step_name)
-                if transformer_class:
-                    transformer = transformer_class(**step_params)
-                    # pandas_df = transformer.fit_transform(pandas_df)
-                    self.pipeline.transformers.append((step_name, transformer))
-            
-            pipe = scikit_pipe(self.pipeline.transformers)
-            pandas_transfmd_df = pipe.fit_transform(pandas_df)
-            return pandas_transfmd_df
-
-    def __init__(self, pipeline_file_path) -> None:
-        super().__init__(pipeline_file_path)
-
+    Args:
+        data_file_path (str) : the input path of input data
+    """
     def load_data(self, data_file_path) -> DataFrame:
         pandas_input_df = read_parquet(data_file_path)
         return pandas_input_df

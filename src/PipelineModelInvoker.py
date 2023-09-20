@@ -1,44 +1,41 @@
 from src.PipelineModel import PipelineModel
 from src.ErrorLogger import log_failure
 
-from datetime import datetime
- 
-    
-class PipelineModelInvoker():
-    
-    def __init__(self) -> None:
-        self.pipe_model = None
-        self.dataset_path = None
 
-    def set_model(self, model: PipelineModel):
-        self.pipe_model = model
+class PipelineModelInvoker:
+    """_summary_
+    This class uses PipelineModel instances for preprocessing and model prediction 
+    
+    Args:
+        pipe_model (PipelineModel) : the PipelineModel instance
+        input_dataset_path: the input dataset path 
+    """
 
-    def set_dataset(self, dataset: str):
-        self.dataset_path = dataset
-        
+    def __init__(self, pipe_model: PipelineModel, input_dataset_path: str) -> None:
+        self.pipe_model = pipe_model
+        self.dataset_path = input_dataset_path
+
+    def pipe_model(self):
+        return self.pipe_model
+
     def execute(self):
         if not self.pipe_model or not self.dataset_path:
-            log_failure(Exception('Undefined model or data set at ModelInvoker.'))
+            log_failure(Exception("Undefined model or data set at ModelInvoker."))
         try:
-            
-            time_init = datetime.now()
-            trained_model = self.pipe_model.load_model()
-            data = self.pipe_model.load_data(self.dataset_path)
-            pipeline = self.pipe_model.load_pipeline()
-            
-            data = data[["vibration_x", "vibration_y", "vibration_z"]]
-            # tr_data["vibration_x"].replace({np.nan: 0}, inplace=True)
-            data_transfmd = self.pipe_model.it_transform(data)
+            # data load and transform
+            input_data = self.pipe_model.load_data(self.dataset_path)
+            input_data = input_data[["vibration_x", "vibration_y", "vibration_z"]]
+            input_data.fillna(0)
+            transfmd_data = self.pipe_model.pipeline.fit_transform(input_data)
 
-            if not len(data_transfmd):
+            # model predicting
+            if not len(transfmd_data):
                 raise RuntimeError("No data to score")
-            if not hasattr(trained_model, "predict"):
-                raise RuntimeError("Model does not have a score function")
+            if not hasattr(self.pipe_model.model, "predict"):
+                raise Exception("Model does not have a score function")
+            predicted_value = self.pipe_model.model.predict(transfmd_data)
 
-            predicted_value = trained_model.predict(data_transfmd)
-            time_end = datetime.now()
-            print(f'Execution time: {time_end-time_init}')
             return predicted_value
-            
+
         except Exception as e:
             log_failure(e)
