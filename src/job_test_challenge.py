@@ -1,10 +1,14 @@
+from PipelineModelScikitLearn import PipelineScikitLearn, PipelineModelScikitLearn
 from src.PipelineModelDask import PipelineModelDask, PipelineDask
 from src.PipelineModelInvoker import PipelineModelInvoker
 from src.PipelineModelConstructor import PipelineModelConstructor
 from ErrorLogger import log_failure
 
 pipeline_json_path = "artifacts/pipeline.jsonc"
-dataset_path = "data/dataset.parquet"
+
+# dataset_path = "data/dataset.parquet"
+# dataset_path = "data/mediumdataset_1part.parquet"
+dataset_path = "data/mediumdataset_10part.parquet"
 
 
 def score():
@@ -21,10 +25,13 @@ def score():
     TODO: find the best n_quantile to reach a balance between performance and accuracy
     """
     try:
-        pipe_scikit_builder = PipelineModelConstructor(
+        pipe_model_constructor = PipelineModelConstructor(
             PipelineModelDask, PipelineDask, pipeline_json_path
         )
-        pipeline_model = pipe_scikit_builder.construct()
+        # pipe_model_constructor = PipelineModelConstructor(
+        #     PipelineModelScikitLearn, PipelineScikitLearn, pipeline_json_path
+        # )
+        pipeline_model = pipe_model_constructor.construct()
 
         invoker = PipelineModelInvoker(pipeline_model, dataset_path)
         predicted_value = invoker.execute()
