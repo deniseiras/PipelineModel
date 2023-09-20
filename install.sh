@@ -1,6 +1,6 @@
 PRJ_NAME="PipelineModel"
-ENV_NAME="${PRJ_NAME}_env"
 VERSION="1.0"
+ENV_NAME="${PRJ_NAME}_env"
 
 python3.8 -m venv ${ENV_NAME}
 source ${ENV_NAME}/bin/activate
