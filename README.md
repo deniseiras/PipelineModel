@@ -36,7 +36,7 @@ Was created 4 tests:
 
 The tests showed that the results of preprocessing made by Scikit Learn and Dask were diferent, mainly due to the difent implementations of QuantileTransform. When removing QuantileTransformer, the results were identical
 
-The use of Dask using diferent parquet partitions over the medium sized files didn't shown any major performance in contrast to Scikit Learn.
+The use of Dask using diferent parquet partitions over the medium sized files didn't shown any major performance in contrast to Scikit Learn. The big data files didn't fit in memory of the computer used.
 
 ## Future
 
