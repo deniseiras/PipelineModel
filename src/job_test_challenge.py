@@ -6,9 +6,9 @@ from ErrorLogger import log_failure
 
 pipeline_json_path = "artifacts/pipeline.jsonc"
 
-# dataset_path = "data/dataset.parquet"
+dataset_path = "data/dataset.parquet"
 # dataset_path = "data/mediumdataset_1part.parquet"
-dataset_path = "data/mediumdataset_10part.parquet"
+# dataset_path = "data/mediumdataset_10part.parquet"
 
 
 def score():
